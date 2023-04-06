@@ -1,6 +1,8 @@
 package np.com.esewa.learn.sampleapplication.inventory.service.impl;
 
 import np.com.esewa.learn.sampleapplication.filedetails.dto.CountDto;
+import np.com.esewa.learn.sampleapplication.inventory.annotation.DecryptName;
+import np.com.esewa.learn.sampleapplication.inventory.annotation.EncryptName;
 import np.com.esewa.learn.sampleapplication.inventory.dto.ProductDeleteDto;
 import np.com.esewa.learn.sampleapplication.inventory.dto.ProductResponseDto;
 import np.com.esewa.learn.sampleapplication.inventory.model.Product;
@@ -16,25 +18,23 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-
     public final ProductRepository productRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-
     @Override
-    public ProductResponseDto findById(Long id) {
+    public ProductResponseDto findById(int id) {
         ProductResponseDto productResponseDto = new ProductResponseDto();
         Product retrievedProduct = productRepository.findById(id).orElseThrow(null);
         if (retrievedProduct != null) {
             productResponseDto.setName(retrievedProduct.getName());
             productResponseDto.setQuantity(retrievedProduct.getQuantity());
-            productResponseDto.setStatus(retrievedProduct.getStatus());
+            productResponseDto.setCode(retrievedProduct.getCode());
         } else {
             productResponseDto.setName(null);
             productResponseDto.setQuantity(null);
-            productResponseDto.setStatus(null);
+            productResponseDto.setCode(null);
         }
         return productResponseDto;
     }
@@ -45,55 +45,51 @@ public class ProductServiceImpl implements ProductService {
         BufferedReader bufferedReader;
         String line;
         try {
-
             bufferedReader = new BufferedReader(new FileReader(filePath));
-
             while ((line = bufferedReader.readLine()) != null) {
                 String[] row = line.split(",");
                 Product product = new Product();
-                // reading product derails form file
+                // reading product details form file
                 product.setName(row[0]);
                 product.setCode(row[1]);
                 product.setQuantity(Long.parseLong(row[2]));
                 product.setPrice(Long.parseLong(row[3]));
-
                 productList.add(product); // converted csv data to list of product
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         return productList;
     }
 
     @Override
+    @EncryptName
     public CountDto addProduct(List<Product> productList) {
         CountDto countDto = new CountDto();
-        int FAIL_COUNT = 0;
-        int SUCCESS_COUNT = 0;
+        int failCount = 0;
+        int successCount = 0;
         for (Product product : productList) {
             if (!productList.isEmpty()) {
                 Product existingProduct = productRepository.findProductByCode(product.getCode());
-                if (!(existingProduct == null)) {
-                    if (existingProduct.getStatus() == ProductStatus.ACTIVE && existingProduct.getCode().equals(product.getCode())) {
-                        FAIL_COUNT++;
-                        continue;
-                    }
+                if (!(existingProduct == null)
+                        && (existingProduct.getStatus() == ProductStatus.ACTIVE
+                        && existingProduct.getCode().equals(product.getCode()))) {
+                    failCount++;
+                    continue;
                 }
             }
             product.setStatus(ProductStatus.ACTIVE);
             productRepository.save(product);
-            SUCCESS_COUNT++;
+            successCount++;
         }
-        countDto.setFAIL_COUNT(FAIL_COUNT);
-        countDto.setSUCCESS_COUNT(SUCCESS_COUNT);
+        countDto.setFAIL_COUNT(failCount);
+        countDto.setSUCCESS_COUNT(successCount);
 
         return countDto;
     }
 
     @Override
-    public ProductDeleteDto deleteProduct(Long id) {
+    public ProductDeleteDto deleteProduct(int id) {
         Product productToBeDeleted = productRepository.findById(id).orElseThrow(null);
         productToBeDeleted.setStatus(ProductStatus.DELETED);
         productRepository.save(productToBeDeleted);

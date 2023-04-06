@@ -12,6 +12,6 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductRequestDto implements Serializable {
  private String name;
+ private String code;
  private Long quantity;
- private ProductStatus status;
 }

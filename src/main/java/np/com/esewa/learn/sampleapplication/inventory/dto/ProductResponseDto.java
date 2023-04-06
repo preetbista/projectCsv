@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class ProductResponseDto implements Serializable {
 
     private String name;
+    private String code;
     private Long quantity;
-    private ProductStatus status;
+
 }

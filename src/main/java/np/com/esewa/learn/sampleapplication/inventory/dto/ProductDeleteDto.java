@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ProductDeleteDto implements Serializable {
-    private Long id;
+    private int id;
     private String message;
 }

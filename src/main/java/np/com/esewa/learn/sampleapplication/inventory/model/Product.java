@@ -1,5 +1,6 @@
 package np.com.esewa.learn.sampleapplication.inventory.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,10 +13,10 @@ import javax.persistence.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private int id;
     @Column(name = "Name")
     private String name;
-    @Column(name = "Code")
+    @Column(name = "Code", nullable = false, unique = true)
     private String code;
     @Column(name = "Quantity")
     private Long quantity;

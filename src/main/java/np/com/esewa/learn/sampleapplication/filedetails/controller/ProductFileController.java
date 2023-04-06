@@ -22,7 +22,7 @@ public class ProductFileController {
     }
 
     @GetMapping("/{filePathId}")
-    FileDetailsResponseDto addFile(@PathVariable Long filePathId) {
+    public FileDetailsResponseDto addFile(@PathVariable int filePathId) {
         return productFileService.getFileById(filePathId);
     }
 }

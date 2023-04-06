@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductFileRepository extends JpaRepository<ProductFile, Long> {
-
+public interface ProductFileRepository extends JpaRepository<ProductFile, Integer> {
     List<ProductFile> findAllByStatus(FileStatus status);
 }

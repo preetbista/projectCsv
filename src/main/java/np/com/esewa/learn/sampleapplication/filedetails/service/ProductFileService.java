@@ -5,6 +5,6 @@ import np.com.esewa.learn.sampleapplication.filedetails.dto.FileDetailsResponseD
 
 public interface ProductFileService {
     void saveFile(FileDetailsRequestDto fileDetailsRequestDto);
-    FileDetailsResponseDto getFileById(Long filePathId);
+    FileDetailsResponseDto getFileById(int filePathId);
 
 }

@@ -1,6 +1,5 @@
-package np.com.esewa.learn.sampleapplication.inventory.config;
+package np.com.esewa.learn.sampleapplication.notification.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -20,44 +19,48 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "productEntityManagerFactoryBean",
-        basePackages = {"np.com.esewa.learn.sampleapplication.inventory.repository"},
-        transactionManagerRef = "productTransactionManager"
+        entityManagerFactoryRef = "notificationEntityManagerFactoryBean",
+        basePackages = {"np.com.esewa.learn.sampleapplication.notification.repository"},
+        transactionManagerRef = "notificationTransactionManager"
 )
-public class ProductDatabaseConfig {
-    @Autowired
-    private Environment environment;
+public class NotificationDbConfig {
+    public final Environment environment;
 
-    @Bean(name = "productDataSource")
+    public NotificationDbConfig(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Bean(name = "notificationDataSource")
     public DataSource dataSource(){
         return new DriverManagerDataSource(
-                Objects.requireNonNull(environment.getProperty("product.datasource.url")),
-                Objects.requireNonNull(environment.getProperty("product.datasource.username")),
-                Objects.requireNonNull(environment.getProperty("product.datasource.password"))
+                Objects.requireNonNull(environment.getProperty("spring.datasource.url")),
+                Objects.requireNonNull(environment.getProperty("spring.datasource.username")),
+                Objects.requireNonNull(environment.getProperty("spring.datasource.password"))
         );
     }
 
-    @Bean(name = "productEntityManagerFactoryBean")
+    @Bean(name = "notificationEntityManagerFactoryBean")
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(){
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource());
 
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        entityManagerFactoryBean.setPackagesToScan("np.com.esewa.learn.sampleapplication.inventory.model");
+        entityManagerFactoryBean.setPackagesToScan("np.com.esewa.learn.sampleapplication.notification.model");
 
         Map<String , String > dbConnProperties = new HashMap<>();
+        dbConnProperties.put("hibernate.dialect","org.hibernate.dialect.MySQL8Dialect");
         dbConnProperties.put("hibernate.hbm2ddl.auto", "update");
         dbConnProperties.put("hibernate.show_sql", "true");
+
         entityManagerFactoryBean.setJpaPropertyMap(dbConnProperties);
 
         return entityManagerFactoryBean;
     }
 
-    @Bean(name = "productTransactionManager")
+    @Bean(name = "notificationTransactionManager")
     public PlatformTransactionManager transactionManager(){
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
         return transactionManager;
     }
 }
-
