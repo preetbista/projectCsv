@@ -1,6 +1,5 @@
 package np.com.esewa.learn.sampleapplication.filedetails.service.impl;
 
-
 import np.com.esewa.learn.sampleapplication.filedetails.dto.CountDto;
 import np.com.esewa.learn.sampleapplication.filedetails.dto.FileDetailsRequestDto;
 import np.com.esewa.learn.sampleapplication.filedetails.dto.FileDetailsResponseDto;
@@ -8,7 +7,6 @@ import np.com.esewa.learn.sampleapplication.filedetails.model.FileStatus;
 import np.com.esewa.learn.sampleapplication.filedetails.model.ProductFile;
 import np.com.esewa.learn.sampleapplication.filedetails.repository.ProductFileRepository;
 import np.com.esewa.learn.sampleapplication.filedetails.service.ProductFileService;
-import np.com.esewa.learn.sampleapplication.inventory.annotation.EncryptName;
 import np.com.esewa.learn.sampleapplication.inventory.model.Product;
 import np.com.esewa.learn.sampleapplication.inventory.service.ProductService;
 import np.com.esewa.learn.sampleapplication.notification.dto.NotificationDto;
@@ -21,14 +19,13 @@ import java.util.List;
 
 @Service
 public class ProductFileServiceImpl implements ProductFileService {
-
     @Autowired
-    private  ProductFileRepository productFileRepository;
+    private ProductFileRepository productFileRepository;
     @Autowired
     private ProductService productService;
-
     @Autowired
     private NotificationService notificationService;
+
     @Override
     public void saveFile(FileDetailsRequestDto fileDetailsRequestDto) {
         ProductFile productFile = new ProductFile();
@@ -38,19 +35,20 @@ public class ProductFileServiceImpl implements ProductFileService {
         productFile.setSUCCESS_COUNT(0L);
         productFileRepository.save(productFile);
     }
+
     @Override
-    public FileDetailsResponseDto getFileById(int filePathId){
+    public FileDetailsResponseDto getFileById(int filePathId) {
         FileDetailsResponseDto fileDetailsResponseDto = new FileDetailsResponseDto();
 
-        ProductFile productFile = productFileRepository.findById(filePathId) .orElseThrow(null);
+        ProductFile productFile = productFileRepository.findById(filePathId).orElseThrow(null);
         fileDetailsResponseDto.setFilePath(productFile.getFilePath());
         fileDetailsResponseDto.setStatus(productFile.getStatus());
 
         return fileDetailsResponseDto;
     }
 
-    @Scheduled(cron =  "${spring.fixedRateInMs}")
-    void processFile(){
+    @Scheduled(cron = "${spring.fixedRateInMs}")
+    void processFile() {
         List<ProductFile> productFileList = productFileRepository.findAllByStatus(FileStatus.PENDING);
         for (ProductFile productFile : productFileList) {
             productFile.setStatus(FileStatus.PROCESSING);
@@ -63,7 +61,7 @@ public class ProductFileServiceImpl implements ProductFileService {
             productFileRepository.save(productFile);
 
             NotificationDto notificationDto = new NotificationDto();
-            String message = "Out of" +( productFile.getFAIL_COUNT() + productFile.getSUCCESS_COUNT())+ "products"
+            String message = "Out of" + (productFile.getFAIL_COUNT() + productFile.getSUCCESS_COUNT()) + "products"
                     + productFile.getFAIL_COUNT() + "failed and " + productFile.getSUCCESS_COUNT() + "added successfully";
 
             notificationDto.setMessage(message);
