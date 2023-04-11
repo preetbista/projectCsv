@@ -3,6 +3,7 @@ package np.com.esewa.learn.sampleapplication.inventory.service.impl;
 import np.com.esewa.learn.sampleapplication.inventory.dto.ProductResponseDto;
 import np.com.esewa.learn.sampleapplication.inventory.model.Product;
 import np.com.esewa.learn.sampleapplication.inventory.repository.ProductRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,26 +22,32 @@ class ProductServiceImplTest {
     private ProductServiceImpl productServiceImpl;
     @Mock
     private ProductRepository testProductRepository;
-    Product newProduct = new Product();
+
 
     @Test
+    @DisplayName("find by id true condition")
     public void findById_findProductUsingId_True() {
+        Product newProduct = new Product();
+        newProduct.setId(1);
+        newProduct.setName("Laptop");
+        newProduct.setCode("L21");
+        newProduct.setQuantity(10L);
         //Arrange
-        ProductResponseDto product = new ProductResponseDto();
+        ProductResponseDto products = new ProductResponseDto();
 
-        product.setId(1);
-        product.setName("Laptop");
-        product.setCode("L21");
-        product.setQuantity(10L);
+        products.setId(1);
+        products.setName("Laptop");
+        products.setCode("L21");
+        products.setQuantity(10L);
 
-        when(testProductRepository.findById(product.getId())).thenReturn(Optional.of(newProduct));
+        when(testProductRepository.findById(products.getId())).thenReturn(Optional.of(newProduct));
 
         //Act
-        ProductResponseDto find = productServiceImpl.findById(product.getId());
+        ProductResponseDto find = productServiceImpl.findById(products.getId());
 
         //Assert
         assertNotNull(find);
-        assertEquals(1, find.getId());
+        assertEquals("Laptop", find.getName());
     }
 
 
