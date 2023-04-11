@@ -27,10 +27,12 @@ public class ProductServiceImpl implements ProductService {
         ProductResponseDto productResponseDto = new ProductResponseDto();
         Product retrievedProduct = productRepository.findById(id).orElseThrow(null);
         if (retrievedProduct != null) {
+            productResponseDto.setId(retrievedProduct.getId());
             productResponseDto.setName(retrievedProduct.getName());
             productResponseDto.setQuantity(retrievedProduct.getQuantity());
             productResponseDto.setCode(retrievedProduct.getCode());
         } else {
+            productResponseDto.setId(id);
             productResponseDto.setName(null);
             productResponseDto.setQuantity(null);
             productResponseDto.setCode(null);
