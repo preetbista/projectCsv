@@ -17,11 +17,12 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    public final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
     @Override
     public ProductResponseDto findById(int id) {
         ProductResponseDto productResponseDto = new ProductResponseDto();
@@ -31,11 +32,6 @@ public class ProductServiceImpl implements ProductService {
             productResponseDto.setName(retrievedProduct.getName());
             productResponseDto.setQuantity(retrievedProduct.getQuantity());
             productResponseDto.setCode(retrievedProduct.getCode());
-        } else {
-            productResponseDto.setId(id);
-            productResponseDto.setName(null);
-            productResponseDto.setQuantity(null);
-            productResponseDto.setCode(null);
         }
         return productResponseDto;
     }
@@ -98,5 +94,6 @@ public class ProductServiceImpl implements ProductService {
         productDeleteDto.setMessage("Product deleted successfully");
         return productDeleteDto;
     }
+
 
 }

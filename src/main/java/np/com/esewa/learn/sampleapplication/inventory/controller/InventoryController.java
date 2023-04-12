@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class InventoryController {
     @Autowired
     private ProductService productService;
-
     public static final Logger logger = LoggerFactory.getLogger(InventoryController.class);
     @GetMapping("/{id}")
     /*@Cacheable(value = "productName", key = "#id")*/
