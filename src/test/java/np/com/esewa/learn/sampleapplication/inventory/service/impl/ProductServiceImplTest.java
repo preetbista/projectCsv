@@ -1,5 +1,6 @@
 package np.com.esewa.learn.sampleapplication.inventory.service.impl;
 
+import np.com.esewa.learn.sampleapplication.filedetails.dto.CountDto;
 import np.com.esewa.learn.sampleapplication.inventory.dto.ProductDeleteDto;
 import np.com.esewa.learn.sampleapplication.inventory.dto.ProductResponseDto;
 import np.com.esewa.learn.sampleapplication.inventory.model.Product;
@@ -106,14 +107,46 @@ class ProductServiceImplTest {
     @Test
     @DisplayName("add product data")
     public void addProduct_AddProductsData_True(){
-        //Arrange
+        // Arrange
         Product product = new Product();
-        product.setId(1);
         product.setName("Computer");
         product.setCode("C3");
         product.setPrice(12000L);
         product.setQuantity(12L);
         product.setStatus(ProductStatus.ACTIVE);
+
+        Product product1 = new Product();
+        product1.setName("PComputer");
+        product1.setCode("C3");
+        product1.setPrice(12000L);
+        product1.setQuantity(12L);
+
+        Product product3 = new Product();
+        product3.setName("mobile");
+        product3.setCode("M31");
+        product3.setPrice(12000L);
+        product3.setQuantity(12L);
+
+        List<Product> listOfProduct = new ArrayList<>();
+        listOfProduct.add(product);
+        listOfProduct.add(product1);
+        listOfProduct.add(product3);
+
+        // Mock behavior of testProductRepository
+        when(testProductRepository.findProductByCode((product.getCode()))).thenReturn(product);
+        when(testProductRepository.findProductByCode(product1.getCode())).thenReturn(product1);
+        when(testProductRepository.findProductByCode(product3.getCode())).thenReturn(null);
+
+        when(testProductRepository.save(product)).thenReturn(product);
+        when(testProductRepository.save(product1)).thenReturn(product1);
+        when(testProductRepository.save(product3)).thenReturn(null);
+
+        // Act
+        CountDto countDto = productServiceImpl.addProduct(listOfProduct);
+
+        // Assert
+        assertEquals(0, countDto.getFAIL_COUNT());
+        assertEquals(3, countDto.getSUCCESS_COUNT());
 
     }
 }
