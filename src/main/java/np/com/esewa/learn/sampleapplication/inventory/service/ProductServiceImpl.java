@@ -1,4 +1,4 @@
-package np.com.esewa.learn.sampleapplication.inventory.service.impl;
+package np.com.esewa.learn.sampleapplication.inventory.service;
 
 import np.com.esewa.learn.sampleapplication.filedetails.dto.CountDto;
 import np.com.esewa.learn.sampleapplication.inventory.annotation.EncryptName;
@@ -37,12 +37,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> readProductDataFromFile(String filePath) {
+    public List<Product> scanDataFromFile(String filePath) {
         List<Product> productList = new ArrayList<>();
-        BufferedReader bufferedReader;
         String line;
         try {
-            bufferedReader = new BufferedReader(new FileReader(filePath));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
             while ((line = bufferedReader.readLine()) != null) {
                 String[] row = line.split(",");
                 Product product = new Product();

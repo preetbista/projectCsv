@@ -53,7 +53,7 @@ public class ProductFileServiceImpl implements ProductFileService {
         for (ProductFile productFile : productFileList) {
             productFile.setStatus(FileStatus.PROCESSING);
             productFileRepository.save(productFile);
-            List<Product> productList = productService.readProductDataFromFile(productFile.getFilePath());
+            List<Product> productList = productService.scanDataFromFile(productFile.getFilePath());
             CountDto countDto = productService.addProduct(productList);
             productFile.setFAIL_COUNT(countDto.getFAIL_COUNT());
             productFile.setSUCCESS_COUNT(countDto.getSUCCESS_COUNT());

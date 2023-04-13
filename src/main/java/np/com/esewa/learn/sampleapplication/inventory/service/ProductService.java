@@ -10,7 +10,7 @@ import java.util.List;
 public interface ProductService {
     ProductResponseDto findById(int id);
     /*ProductResponseDto findByCode(String code);*/
-    List<Product> readProductDataFromFile(String filePath);
+    List<Product> scanDataFromFile(String filePath);
     CountDto addProduct(List<Product> productList);
     ProductDeleteDto deleteProduct(int id);
 }
